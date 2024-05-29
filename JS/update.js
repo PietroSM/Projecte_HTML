@@ -1,16 +1,18 @@
-function update() {
-    // Movimiento del jugador
-    let vX = 0, vY = 0, direccionPlayer;
+/**
+ * Funcion para controlar el movimiento del player
+ */
+function movimientoPlayer(){
+    let vX = 0, vY = 0;
 
     if (this.cursors.left.isDown) {
         this.player.setVelocityX(-400);
         this.player.anims.play('left', true);
-        direccionPlayer = 'left';
+        this.direccionPlayer = 'left';
         vX = -400;
     } else if (this.cursors.right.isDown) {
         this.player.setVelocityX(400);
         this.player.anims.play('right', true);
-        direccionPlayer = 'right';
+        this.direccionPlayer = 'right';
         vX = 400;
     } else {
         this.player.setVelocityX(0);
@@ -20,19 +22,23 @@ function update() {
     if (this.cursors.up.isDown) {
         this.player.setVelocityY(-400);
         this.player.anims.play('up', true);
-        direccionPlayer = 'up';
+        this.direccionPlayer = 'up';
         vY = -400;
     } else if (this.cursors.down.isDown) {
         this.player.setVelocityY(400);
         this.player.anims.play('down', true);
-        direccionPlayer = 'down';
+        this.direccionPlayer = 'down';
         vY = 400;
     } else {
         this.player.setVelocityY(0);
     }
+}
 
-    //Actualitzar posicionm arma
-    switch (direccionPlayer) {
+/**
+ * Funcion para posicionar el arma dependiendo donde este mirando el jugador
+ */
+function posicionmArma(){
+    switch (this.direccionPlayer) {
         case 'left':
             this.arma.setPosition(this.player.x - 80, this.player.y);
             break;
@@ -46,21 +52,23 @@ function update() {
             this.arma.setPosition(this.player.x, this.player.y + 90);
             break;
     }
+}
 
-    // Detectar colisiones entre el arma y los goblins
-    this.physics.add.overlap(this.arma, this.enemicGroup, golpearGoblin, null, this);
-
-    // Mostrar/ocultar el arma
+/**
+ * Funcion oculta y muestra el arma
+ */
+function mostrarOcultarArma(){
     if (this.cursors.space.isDown) {
         this.arma.visible = true;
     } else {
         this.arma.visible = false;
     }
+}
 
-
-
-
-    // Movimiento de los goblins
+/**
+ * Funcion que controla el movimiento de los goblins
+ */
+function movimientoGoblin(){
     const velocidadGoblin = 50;
 
     this.enemicGroup.children.iterate((enemic) => {
@@ -88,6 +96,23 @@ function update() {
             }
         }
     });
+}
+
+function update() {
+    // Movimiento del jugador
+    movimientoPlayer.call(this);
+
+    //Actualitzar posicionm arma
+    posicionmArma.call(this);
+
+    // Detectar colisiones entre el arma y los goblins
+    this.physics.add.overlap(this.arma, this.enemicGroup, golpearGoblin, null, this);
+
+    // Mostrar/ocultar el arma
+    mostrarOcultarArma.call(this);
+
+    // Movimiento de los goblins
+    movimientoGoblin.call(this);
 
     //reducción de vida si son golpeados por el jugador
     this.physics.add.collider(this.player, this.enemicGroup, golpearJugador, null, this);
@@ -99,9 +124,7 @@ function update() {
         }
     });
 
-
 }
-
 
 /**
  * Funcion para bajar la vida i elimianr un golbin al pegarle con el arma

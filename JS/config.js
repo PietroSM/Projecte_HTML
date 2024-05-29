@@ -20,7 +20,7 @@ const config = {
 };
 
 
-let belowLayer, pared;
+let belowLayer, pared,direccionPlayer;
 
 let player, map, inputKeys,scale = 1.75, cursors, enemic,enemicGroup,arma;
 let textoFinal,boton_reiniciar, healthBar;
